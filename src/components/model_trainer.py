@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.linear_model import LinearRegression
 from sklearn.ensemble import GradientBoostingRegressor, AdaBoostRegressor,RandomForestRegressor
-from src.utils import evalute_models, save_object
+from src.utils import *
 from src.exception import CustomException
 from sklearn.metrics import r2_score
 from sklearn.neighbors import KNeighborsRegressor
@@ -25,14 +25,13 @@ class ModelTrainer:
     def initiate_model_trainer(self, train_set, test_set):
        
 
-        x_train, y_train, x_test, y_test = (
-            train_set[:,:-1], train_set[:-1], test_set[:,:-1], test_set[:,-1])
+        x_train, y_train, x_test, y_test = train_set[:,:-1], train_set[:,-1], test_set[:,:-1], test_set[:,-1]
 
 
         models = {
 
             "Random Forest": RandomForestRegressor(),
-            "Decision Tree": DecisionTreeRegressor,
+            "Decision Tree": DecisionTreeRegressor(),
             "Gradient Boosting": GradientBoostingRegressor(),
             "Linear Regression": LinearRegression(),
             "XGBRegressor": XGBRegressor(),
@@ -79,7 +78,7 @@ class ModelTrainer:
                 
             }
 
-        model_report:dict = evalute_models(x_train=x_train, y_train=y_train, x_test=x_test, y_test=y_test, models=models, param=param)
+        model_report:dict = evaluate_models(X_train=x_train, y_train=y_train, X_test=x_test, y_test=y_test, models=models, param=param)
         best_model_score = max(sorted(model_report.values()))
         best_model_name = list(model_report.keys())[list(model_report.values()).index(best_model_score)]
         best_model = models[best_model_name]
