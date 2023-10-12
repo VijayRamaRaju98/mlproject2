@@ -7,6 +7,7 @@ from sklearn.pipeline import Pipeline
 from dataclasses import dataclass
 from sklearn.impute import SimpleImputer
 from src.exception import CustomException
+from src.utils import save_object
 
 @dataclass
 class DatatransformationConfig:
@@ -15,7 +16,7 @@ class DatatransformationConfig:
     
 class DataTransformation:
     def __init__(self):
-        self.dataingestionconfig = DatatransformationConfig()
+        self.datatransformationconfig = DatatransformationConfig()
 
     def get_preprocessor_obj(self):
 
@@ -67,10 +68,13 @@ class DataTransformation:
             input_train_arr = preprocessor.fit_transform(input_feature_train_df)
             input_test_arr = preprocessor.transform(input_feature_test_df)
 
-            train = np.c_[input_train_arr, target_feature_train_df]
-            test = np.c_[input_test_arr, target_feature_test_df]
-
-            return train, test
+            train = np.c_[input_train_arr, np.array(target_feature_train_df)]
+            test = np.c_[input_test_arr, np.array(target_feature_test_df)]
+            save_object(
+                file_path= self.datatransformationconfig.preprocessor_file_obj,
+                obj=preprocessor
+            )
+            return train, test,self.datatransformationconfig.preprocessor_file_obj
             
         except Exception as e:
 
